@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.ContentMapper">	
+	<select id="selectArticleListCount" resultType="Integer">
+		/* contentMapper.selectArticleListCount */
+		SELECT
+			COUNT(*)
+		FROM
+			(
+			SELECT
+					ROW_NUMBER() OVER (ORDER BY RSLT1.REGISTRATION_DATE DESC) 	AS PAGING_NUM
+					, RSLT1.NUM 												AS num
+				    , RSLT1.ARTICLE_UID 										AS articleUid
+				    , RSLT1.CATEGORY_NAME 										AS categoryName
+				    , RSLT1.TITLE 												AS title
+				    , DATE_FORMAT(RSLT1.REGISTRATION_DATE, '%Y. %m. %d') 		AS registrationDate
+				    , GET_USER_NAME(RSLT1.REGISTRATION_USER)					AS registrationUser
+				    , CASE 
+				    	WHEN 
+				    		RSLT1.FLAG_ACTIVATED = 'Y' 
+				    	THEN 
+				    		'activated' 
+				    	ELSE 
+				    		'inactivated' 
+				    	END													AS flagActivated
+				    , RSLT1.FLAG_DELETED
+			FROM
+				(
+				SELECT 
+				    ROW_NUMBER() OVER (ORDER BY A.REGISTRATION_DATE ASC) 	AS NUM
+				    , A.ARTICLE_UID
+				    , C.CATEGORY_UID
+				    , C.CATEGORY_NAME
+				    , A.USER_UID
+				    , A.TITLE
+				    , A.CONTENT
+				    , A.REGISTRATION_DATE
+				    , A.REGISTRATION_USER
+				    , A.FLAG_ACTIVATED
+				    , A.FLAG_DELETED
+				FROM 
+				    ARTICLE A
+				    LEFT JOIN CATEGORY C 
+				    ON 
+				        C.CATEGORY_UID = A.CATEGORY_UID
+				) RSLT1
+			WHERE
+			    RSLT1.FLAG_DELETED = 'N'
+			    <if test="categoryUidArray != null and categoryUidArray != ''">
+				    AND RSLT1.CATEGORY_UID IN 
+				    <foreach collection="categoryUidArray" item="categoryUid" open="(" separator="," close=")">
+				    	#{categoryUid}
+				    </foreach>
+			    </if>
+			    <if test="userUid != null and userUid != ''">
+				    AND RSLT1.USER_UID = #{userUid}
+			    </if>
+			    <if test="searchValue != null and searchValue != '' and searchOption != null and searchOption != ''">
+					<choose>
+						<when test="searchOption == 'title'">
+							AND RSLT1.TITLE LIKE CONCAT('%', #{searchValue}, '%')
+						</when>
+						<when test="searchOption == 'content'">
+							AND RSLT1.CONTENT LIKE CONCAT('%', #{searchValue}, '%')
+						</when>
+					</choose>
+			    </if>
+			ORDER BY 
+				RSLT1.REGISTRATION_DATE DESC
+			) RSLT2
+	</select>
+
+	<select id="selectArticleList" resultType="GeekilyMap">
+		/* contentMapper.selectArticleList */
+		SELECT
+			RSLT2.*
+		FROM
+			(
+			SELECT
+					ROW_NUMBER() OVER (ORDER BY RSLT1.REGISTRATION_DATE DESC) 	AS PAGING_INDEX
+					, RSLT1.NUM 												AS num
+				    , RSLT1.ARTICLE_UID 										AS articleUid
+				    , RSLT1.CATEGORY_NAME 										AS categoryName
+				    , RSLT1.TITLE 												AS title
+				    , DATE_FORMAT(RSLT1.REGISTRATION_DATE, '%Y. %m. %d') 		AS registrationDate
+				    , GET_USER_NAME(RSLT1.REGISTRATION_USER)					AS registrationUser
+				    , CASE 
+				    	WHEN 
+				    		RSLT1.FLAG_ACTIVATED = 'Y' 
+				    	THEN 
+				    		'activated' 
+				    	ELSE 
+				    		'inactivated' 
+				    	END													AS flagActivated
+				    , RSLT1.FLAG_DELETED
+			FROM
+				(
+				SELECT 
+				    ROW_NUMBER() OVER (PARTITION BY A.USER_UID ORDER BY A.REGISTRATION_DATE ASC) 	AS NUM
+				    , A.ARTICLE_UID
+				    , C.CATEGORY_UID
+				    , C.CATEGORY_NAME
+				    , A.USER_UID
+				    , A.TITLE
+				    , A.CONTENT
+				    , A.REGISTRATION_DATE
+				    , A.REGISTRATION_USER
+				    , A.FLAG_ACTIVATED
+				    , A.FLAG_DELETED
+				FROM 
+				    ARTICLE A
+				    LEFT JOIN CATEGORY C 
+				    ON 
+				        C.CATEGORY_UID = A.CATEGORY_UID
+				) RSLT1
+			WHERE
+			    RSLT1.FLAG_DELETED = 'N'
+			    <if test="categoryUidArray != null and categoryUidArray != ''">
+				    AND RSLT1.CATEGORY_UID IN 
+				    <foreach collection="categoryUidArray" item="categoryUid" open="(" separator="," close=")">
+				    	#{categoryUid}
+				    </foreach>
+			    </if>
+			    <if test="userUid != null and userUid != ''">
+				    AND RSLT1.USER_UID = #{userUid}
+			    </if>
+			    <if test="searchValue != null and searchValue != '' and searchOption != null and searchOption != ''">
+					<choose>
+						<when test="searchOption == 'title'">
+							AND RSLT1.TITLE LIKE CONCAT('%', #{searchValue}, '%')
+						</when>
+						<when test="searchOption == 'content'">
+							AND RSLT1.CONTENT LIKE CONCAT('%', #{searchValue}, '%')
+						</when>
+					</choose>
+			    </if>
+			ORDER BY 
+				RSLT1.REGISTRATION_DATE DESC
+			) RSLT2
+		WHERE 
+			PAGING_INDEX <![CDATA[>]]> #{dataPagingIndex}
+		LIMIT #{dataCountPerPage}
+	</select>
+	
+	<select id="selectArticleForView" parameterType="GeekilyMap" resultType="GeekilyMap">
+		/* contentMapper.selectArticleForView */
+		SELECT 
+			A.ARTICLE_UID 						AS articleUid
+		    , C.CATEGORY_NAME 					AS categoryName
+		    , F.URL_PATH 						AS thumbnailUrlPath
+		    , A.TITLE 							AS title
+		    , A.CONTENT 						AS content
+		    , A.REGISTRATION_DATE 				AS registrationDate
+		    , CASE 
+		    	WHEN
+		    		A.FLAG_ACTIVATED = 'Y' 
+		    	THEN 
+		    		'activated' 
+		    	ELSE 
+		    		'inactivated' 
+		    	END								AS flagActivated
+		FROM 
+		    ARTICLE A
+		    LEFT JOIN CATEGORY C
+		    ON
+			    C.CATEGORY_UID = A.CATEGORY_UID
+			LEFT JOIN `FILE` F
+			ON
+				F.FILE_UID = A.THUMBNAIL_UID
+		WHERE
+			ARTICLE_UID = #{articleUid}
+	</select>
+	
+	<select id="selectArticleForEdit" parameterType="GeekilyMap" resultType="GeekilyMap">
+		/* contentMapper.selectArticleForEdit */
+		SELECT 
+			ARTICLE_UID 		  	AS articleUid
+		    , CATEGORY_UID 		  	AS categoryUid
+		    , THUMBNAIL_UID 	  	AS thumbnailUid
+		    , TITLE 				AS title
+		    , CONTENT 				AS content
+		    , REGISTRATION_DATE 	AS registrationDate
+		    , REGISTRATION_USER 	AS registrationUser
+		    , UPDATE_DATE 			AS updateDate
+		    , UPDATE_USER 			AS updateUser
+		    , FLAG_ACTIVATED 		AS flagActivated
+		    , FLAG_DELETED 			AS flagDeleted
+		FROM 
+		    ARTICLE
+		WHERE
+			ARTICLE_UID = #{articleUid}
+	</select>
+	
+	<insert id="upsertArticle" parameterType="GeekilyMap">
+		/* contentMapper.upsertArticle */
+		INSERT INTO ARTICLE (
+			ARTICLE_UID
+			, CATEGORY_UID
+			, THUMBNAIL_UID
+			, USER_UID
+			, TITLE
+			, CONTENT
+			, REGISTRATION_DATE
+			, REGISTRATION_USER
+			, FLAG_ACTIVATED
+		) VALUES (
+			#{articleUid}
+			, #{categoryUid}
+			, #{thumbnailUid}
+		    , #{userUid}
+			, #{title}
+			, #{content}
+			, NOW()
+		    , #{userUid}
+			, #{flagActivated}
+		)
+		ON DUPLICATE KEY UPDATE
+			CATEGORY_UID 		= #{categoryUid}
+			<if test="thumbnailUid != null and thumbnailUid != ''">
+				, THUMBNAIL_UID = #{thumbnailUid}
+			</if>
+			, TITLE 			= #{title}
+			, CONTENT			= #{content}
+			, UPDATE_DATE		= NOW()
+			, UPDATE_USER		= #{userUid}
+			, FLAG_ACTIVATED	= #{flagActivated}
+	</insert>
+	
+	<update id="deleteArticle" parameterType="GeekilyMap">
+		/* contentMapper.deleteArticle */
+		UPDATE ARTICLE
+		SET
+			FLAG_DELETED = 'Y'
+		WHERE
+			ARTICLE_UID = #{articleUid};
+	</update>
+
+	<select id="selectCategory" parameterType="GeekilyMap" resultType="GeekilyMap">
+		/* contentMapper.selectCategory */
+		SELECT 
+		    CATEGORY_UID 			AS categoryUid
+		    , PARENT_CATEGORY_UID 	AS parentCategoryUid
+		    , CATEGORY_NAME 		AS categoryName
+		    , URL_PATH				AS urlPath
+		    , DEPTH 				AS depth
+		    , `ORDER` 				AS `order`
+		    , FLAG_ACTIVATED 		AS flagActivated
+		FROM 
+		    CATEGORY
+		WHERE
+		    FLAG_DELETED = 'N'
+		    AND USER_UID = #{userUid}
+	</select>
+	
+	<update id="updateCategoryOrder" parameterType="GeekilyMap">
+		/* contentMapper.updateCategoryOrder */
+     	UPDATE CATEGORY
+    	SET 
+    		`ORDER` = ${order}
+    	WHERE 
+    		CATEGORY_UID = #{categoryUid}
+	</update>
+	
+	<insert id="insertCategory" parameterType="GeekilyMap">
+		/* contentMapper.insertCategory */
+		INSERT INTO CATEGORY (
+		    CATEGORY_UID
+		    <if test="parentCategoryUid != null and parentCategoryUid != ''">
+		    	, PARENT_CATEGORY_UID
+		    </if>
+		    , USER_UID
+		    , CATEGORY_NAME
+		    , URL_PATH
+		    , DEPTH
+		    , `ORDER`
+		    , REGISTRATION_DATE
+		    , REGISTRATION_USER
+		    , FLAG_ACTIVATED
+		) VALUES (
+		    #{categoryUid}
+		    <if test="parentCategoryUid != null and parentCategoryUid != ''">
+		    	, #{parentCategoryUid}
+		    </if>
+		    , #{userUid}
+		    , #{categoryName}
+		    , REPLACE(#{urlPath}, '/', '')
+		    , #{depth}
+			<choose>
+				<when test="parentCategoryUid != null and parentCategoryUid != ''">
+					, (SELECT IFNULL(MAX(C.`ORDER`), 0) + 1 FROM CATEGORY C WHERE C.PARENT_CATEGORY_UID = #{parentCategoryUid})
+				</when>
+				<otherwise>
+					, (SELECT IFNULL(MAX(C.`ORDER`), 0) + 1 FROM CATEGORY C WHERE C.DEPTH = 1 AND C.USER_UID = #{userUid})
+				</otherwise>
+			</choose>
+		    , NOW()
+		    , #{userUid}
+		    , #{flagActivated}
+		)
+	</insert>
+	
+	<update id="updateCategory" parameterType="GeekilyMap">
+		/* contentMapper.updateCategory */
+		UPDATE CATEGORY
+		SET   
+		  	CATEGORY_NAME       = #{categoryName}
+		  	, URL_PATH			= REPLACE(#{urlPath}, '/', '')
+		    , UPDATE_DATE		= NOW()
+		    , UPDATE_USER      	= #{userUid}
+		    , FLAG_ACTIVATED   	= #{flagActivated}
+		WHERE 
+			CATEGORY_UID        = #{categoryUid}
+	</update>
+	
+	<delete id="deleteCategory" parameterType="GeekilyMap">
+		/* contentMapper.deleteCategory */
+		UPDATE CATEGORY
+		SET 
+		    UPDATE_DATE		= NOW()
+		    , UPDATE_USER	= #{userUid}
+		    , FLAG_DELETED	= 'Y'
+		WHERE
+		    CATEGORY_UID 	= #{categoryUid}
+	</delete>
+</mapper>

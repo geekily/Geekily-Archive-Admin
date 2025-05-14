@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.UserMapper">
+
+	<select id="selectUser" resultType="GeekilyMap">
+		/* userMapper.selectUser */
+		SELECT
+			U.EMAIL				AS email
+			, U.USER_NAME		AS userName
+			, U.ARCHIVE_NAME	AS archiveName
+    		, CASE 
+        		WHEN DATEDIFF(CURDATE(), U.ARCHIVE_NAME_UPDATE_DATE) <![CDATA[>]]> 7 THEN 'Y'
+        		ELSE ''
+    			END 			AS flagArchiveNameUpdateAvailable
+			, F.URL_PATH 		AS profileImageUrlPath
+		FROM
+			USER U
+			LEFT JOIN `FILE` F
+			ON
+				F.FILE_UID = U.PROFILE_IMAGE_UID
+		WHERE
+			U.USER_UID = #{userUid}
+	</select>
+	
+	<select id="checkArchiveNameExistence" parameterType="GeekilyMap" resultType="Boolean">
+		/* userMapper.checkArchiveNameExistence */
+	    SELECT EXISTS (
+	    	SELECT 
+	    		1
+	        FROM 
+	        	USER
+	        WHERE 
+	        	ARCHIVE_NAME = #{archiveName}
+	        	AND USER_UID <![CDATA[<>]]> #{userUid}
+		) AS FLAG_EXISTENCE
+	</select>
+	
+	<select id="checkArchiveNameUpaateAvailable" parameterType="GeekilyMap" resultType="Boolean">
+		/* userMapper.checkArchiveNameUpaateAvailable */
+		SELECT EXISTS (
+	    	SELECT 
+	    		1
+	        FROM 
+	        	USER
+	        WHERE 
+	        	USER_UID = #{userUid}
+	        	AND DATEDIFF(CURDATE(), ARCHIVE_NAME_UPDATE_DATE) <![CDATA[>]]> 7
+		) AS FLAG_EXISTENCE
+	</select>
+	
+	<update id="updateUser" parameterType="GeekilyMap" >
+		/* userMapper.updateUser */
+		UPDATE USER
+		SET
+			USER_NAME 		= #{userName}
+			, ARCHIVE_NAME 	= #{archiveName}
+			, UPDATE_DATE	= NOW()
+			, UPDATE_USER	= #{userUid}
+			<if test="profileImageUid != null and profileImageUid != ''">
+				, PROFILE_IMAGE_UID = #{profileImageUid}
+			</if>
+			<if test="password != null and password != ''">
+				, PASSWORD = #{password}
+			</if>
+			<if test="flagArchiveNameUpdate != null and flagArchiveNameUpdate != ''">
+				, ARCHIVE_NAME_UPDATE_DATE = NOW()
+			</if>
+		WHERE
+			USER_UID 		= #{userUid}
+	</update>
+	
+	<update id="deleteUser" parameterType="GeekilyMap" >
+		/* userMapper.deleteUser */
+		UPDATE USER
+		SET
+			FLAG_DELETED = 'Y'
+		WHERE
+			USER_UID = #{userUid}
+	</update>
+
+	<select id="selectSocialMedia" resultType="GeekilyMap">
+		/* userMapper.selectSocialMedia */
+		SELECT 
+			C.CODE_VALUE	AS codeValue
+			, C.CODE_LABEL	AS codeLabel
+			, SM.URL		AS url
+		FROM 
+			SOCIAL_MEDIA SM
+			RIGHT JOIN `CODE` C
+			ON 
+				SM.SOCIAL_MEDIA_TYPE 	= C.CODE_VALUE
+				AND SM.USER_UID 		= #{userUid}
+				AND SM.FLAG_DELETED		= 'N'
+		WHERE 
+			C.CODE_TYPE = 'SOCIAL_MEDIA_TYPE'
+		ORDER BY 
+			C.`ORDER` ASC
+	</select>
+
+	<insert id="insertSocialMedia" parameterType="GeekilyMap">
+		/* userMapper.insertSocialMedia */
+		INSERT INTO SOCIAL_MEDIA (
+			SOCIAL_MEDIA_UID
+			, USER_UID
+			, SOCIAL_MEDIA_TYPE
+			, URL
+			, REGISTRATION_DATE
+			, REGISTRATION_USER
+		) VALUES (
+			#{socialMediaUid}
+			, #{userUid}
+			, #{socialMediaType}
+			, #{url}
+			, NOW()
+		    , #{userUid}
+		)
+	</insert>
+	
+	<update id="deleteSocialMeida">
+		/* userMapper.deleteSocialMeida */
+		UPDATE SOCIAL_MEDIA
+		SET
+			FLAG_DELETED 	= 'Y'
+		WHERE
+			USER_UID 		= #{userUid}
+	</update>
+</mapper>

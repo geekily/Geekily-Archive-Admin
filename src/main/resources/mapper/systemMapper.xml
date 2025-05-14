@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.SystemMapper">
+		<select id="selectAllMenu" resultType="HashMap">
+		/* systemMapper.selectAllMenu */
+		SELECT 
+			MENU_UID       						AS menuUid
+			, NVL(PARENT_MENU_UID, '')  		AS parentMenuUid
+			, DEPTH 							AS depth
+			, `ORDER`           				AS `order`
+		  	, TITLE             				AS title
+		  	, PATH              				AS path
+		  	, FLAG_ACTIVATED					AS flagActivated
+		  	, FLAG_DELETED      				AS flagDeleted
+		FROM 
+		    MENU
+		WHERE
+			FLAG_DELETED = 'N'
+	</select>
+
+	<insert id="insertMenu" parameterType="GeekilyMap">
+		/* systemMapper.insertMenu */
+		INSERT INTO MENU (
+			MENU_UID
+			<if test="parentMenuUid != null and parentMenuUid != ''">
+				, PARENT_MENU_UID
+			</if>
+			, DEPTH
+			, `ORDER`
+			, TITLE
+			, PATH
+			, REGISTRATION_DATE
+			, REGISTRATION_USER
+			, FLAG_ACTIVATED
+		) VALUES ( 
+			#{menuUid}
+			<if test="parentMenuUid != null and parentMenuUid != ''">
+				, #{parentMenuUid}
+			</if>
+			, ${depth}
+			<choose>
+				<when test="parentMenuUid != null and parentMenuUid != ''">
+					, (SELECT IFNULL(MAX(M.`ORDER`), 0) + 1 FROM MENU M WHERE M.PARENT_MENU_UID = #{parentMenuUid})
+				</when>
+				<otherwise>
+					, (SELECT IFNULL(MAX(M.`ORDER`), 0) + 1 FROM MENU M WHERE M.DEPTH = 1)
+				</otherwise>
+			</choose>
+			, #{title}
+			, #{path}
+			, NOW()
+			, #{userUid}
+			, #{flagActivated}
+		)
+	</insert>
+	
+	<update id="updateMenu" parameterType="GeekilyMap">
+		/* systemMapper.updateMenu */
+		UPDATE MENU
+		SET 
+		    TITLE       		= #{title} 
+		    , PATH          	= #{path}
+		    , UPDATE_DATE		= NOW()
+		    , UPDATE_USER		= #{userUid}
+		    , FLAG_ACTIVATED	= #{flagActivated}
+		WHERE
+		    MENU_UID = #{menuUid}
+	</update>
+	
+	<update id="deleteMenu" parameterType="GeekilyMap">
+		/* systemMapper.deleteMenu */
+		UPDATE MENU
+		SET 
+		    UPDATE_DATE		= NOW()
+		    , UPDATE_USER	= #{userUid}
+		    , FLAG_DELETED	= 'Y'
+		WHERE
+		    MENU_UID = #{menuUid}
+	</update>
+</mapper>

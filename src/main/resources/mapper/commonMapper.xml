@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.CommonMapper">
+	<select id="selectAllMenu" parameterType="GeekilyMap" resultType="HashMap">
+		/* commonMapper.selectAllMenu */
+		SELECT 
+			M.MENU_UID       					AS menuUid
+			, NVL(M.PARENT_MENU_UID, '')  		AS parentMenuUid
+			, M.DEPTH 							AS depth
+			, M.`ORDER`           				AS `order`
+		  	, M.TITLE             				AS title
+		  	, M.PATH              				AS path
+		  	, M.REGISTRATION_DATE 				AS registrationDate
+		  	, M.REGISTRATION_USER 				AS registrationUser
+		  	, M.UPDATE_DATE       				AS updateDate
+		  	, M.UPDATE_USER      				AS updateUser
+		  	, M.FLAG_ACTIVATED					AS flagActivated
+		  	, M.FLAG_DELETED      				AS flagDeleted
+		  	<if test="subPathArray != null">
+	  		  	, CASE 
+	  		  		<foreach collection="subPathArray" item="subPath">
+	  		  			WHEN M.PATH LIKE CONCAT('/', #{subPath}, '%') THEN 'Y'
+	  		  		</foreach>
+					ELSE 'N' 
+				END							AS flagSelected
+			</if>
+		FROM 
+		    MENU M
+		    INNER JOIN USER U
+		    ON
+		    	M.ACCESS_LEVEL <![CDATA[>=]]> U.ACCESS_LEVEL
+		WHERE
+			M.FLAG_DELETED 			= 'N'
+			AND M.FLAG_ACTIVATED 	= 'Y'
+			AND U.USER_UID 			= #{userUid};
+	</select>
+	
+	<select id="selectSelectedMenuTitle" parameterType="String" resultType="String">
+		/* commonMapper.selectSelectedMenuTitle */
+		SELECT
+			TITLE
+		FROM
+			MENU
+		WHERE
+			PATH LIKE CONCAT('/', #{path}, '%')
+	</select>
+</mapper>

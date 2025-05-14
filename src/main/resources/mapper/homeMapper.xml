@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.HomeMapper">
+	<select id="selectTrafficTrendForMyArchive" parameterType="GeekilyMap" resultType="GeekilyMap">
+		/* homeMapper.selectTrafficTrendForMyArchive */
+		SELECT
+		    MONTHS.MONTH			AS month
+		    , COUNT(LAV.USER_UID) 	AS visitCount
+		FROM 
+			(
+		    SELECT 
+		    	DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL N MONTH), '%Y. %m') AS MONTH
+		    FROM 
+		    	(
+		        SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 
+		        UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5
+		    	) AS NUMS
+			) AS MONTHS
+		LEFT JOIN LOG_ARCHIVE_VISIT LAV
+	    ON 
+	    	DATE_FORMAT(LAV.VIEW_DATE, '%Y. %m') 	= MONTHS.MONTH
+	    	AND LAV.USER_UID 						= #{userUid}
+		GROUP BY
+		    MONTHS.MONTH
+		ORDER BY
+		    MONTHS.MONTH
+	</select>
+
+	<select id="selectTop5MostViewedArticlesInTheLast30Days" parameterType="GeekilyMap" resultType="GeekilyMap">
+		/* homeMapper.selectTop5MostViewedArticlesInTheLast30Days */
+		SELECT 
+			A.ARTICLE_UID		AS articleUid
+			, A.TITLE			AS title
+			, LAV.VIEW_COUNT	AS viewCount
+			, F.URL_PATH		AS thumbnailUrlPath 
+		FROM 
+			ARTICLE A
+			INNER JOIN (
+				SELECT 
+					LAV.ARTICLE_UID
+					, COUNT(*) 	AS VIEW_COUNT
+				FROM 	
+					LOG_ARTICLE_VIEW LAV
+				WHERE
+					LAV.VIEW_DATE <![CDATA[>=]]> NOW() - INTERVAL 30 DAY
+				GROUP BY
+					LAV.ARTICLE_UID
+			) LAV
+			ON
+				LAV.ARTICLE_UID = A.ARTICLE_UID
+			LEFT JOIN `FILE` F
+			ON
+				F.FILE_UID = A.THUMBNAIL_UID
+		WHERE
+			A.USER_UID = #{userUid}
+		ORDER BY
+			LAV.VIEW_COUNT DESC
+		LIMIT 5
+	</select>
+</mapper>
