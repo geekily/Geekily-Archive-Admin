@@ -53,6 +53,10 @@ public class LoginService implements LoginMapper{
 			    	userMap.put("userName", cryptoUtil.decryptData(userMap.getString("userName")));
 				}
 			}
+			
+			if(Util.isNotEmpty(userMap)) {
+				userMap.put("myArchiveFullUrlPath", Util.getUserServerUrl() + userMap.getString("myArchiveUrlPath"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

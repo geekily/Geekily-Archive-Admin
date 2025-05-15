@@ -22,21 +22,21 @@ public class CommonController {
 
 	@GetMapping(value = "/menu")
 	public String menu(HttpServletRequest request, ModelMap modelMap) throws Exception{
-
 		List<Map<String, Object>> menuList = null;
-		
+		String profileImageUrlPath = null;
 		try {
 			String subPath = request.getAttribute("subPath").toString();
 			GeekilyMap gMap = new GeekilyMap();
 			gMap.put("subPathArray", Util.splitSubPath(subPath));
 			
-			menuList = commonService.selectAllMenu(gMap);
-			menuList = Util.hierarchicalSortList("menuUid", "parentMenuUid", "depth", "order", menuList);
+			profileImageUrlPath = commonService.selectProfileImageUrlPath(gMap);
+			menuList 			= commonService.selectAllMenu(gMap);
+			menuList 			= Util.hierarchicalSortList("menuUid", "parentMenuUid", "depth", "order", menuList);
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		
-		modelMap.addAttribute("menuList", menuList);
+		modelMap.addAttribute("profileImageUrlPath"	, profileImageUrlPath);
+		modelMap.addAttribute("menuList"			, menuList);
 		return "common/menu";
 	}
 }

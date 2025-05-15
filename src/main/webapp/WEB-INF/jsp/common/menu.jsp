@@ -4,6 +4,10 @@
 	<div class="project-name d-flex align-items-center justify-content-center" onclick="goToPage('/');">
 		${sessionScope.userMap.archiveLogo}
 	</div>
+	
+	<div class="profile-picture d-flex align-items-center justify-content-center">
+		<img class="rounded-circle" src="${profileImageUrlPath}" onerror="getErrorImageUrl(this, 'profile')" width="150"  onclick="goToPage('/user/profile')">
+	</div>
 
 	<c:forEach items="${menuList}" var="parentVO" varStatus="status">
 		<div class="accordion">

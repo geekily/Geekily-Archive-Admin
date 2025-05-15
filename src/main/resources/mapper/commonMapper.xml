@@ -45,4 +45,17 @@
 		WHERE
 			PATH LIKE CONCAT('/', #{path}, '%')
 	</select>
+	
+	<select id="selectProfileImageUrlPath" parameterType="GeekilyMap" resultType="String">
+		/* commonMapper.selectProfileImageUrlPath */
+		SELECT
+			F.URL_PATH AS profileImageUrlPath
+		FROM
+			USER U
+			LEFT JOIN `FILE` F
+			ON
+				F.FILE_UID = U.PROFILE_IMAGE_UID
+		WHERE
+			U.USER_UID = #{userUid}
+	</select>
 </mapper>

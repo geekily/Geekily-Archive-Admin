@@ -25,9 +25,12 @@
 				<div class="content-wrapper">
 					<div class="top-menu-name-bar d-flex align-items-center justify-content-between">
 						<div>${currentMenuTitle}</div>
-						<c:if test="${sessionScope.signinType eq 'normal'}">
-							<div><i class="bi bi-box-arrow-right" title="Log out" onclick="goToPage('/login/logout');"></i></div>
-						</c:if>
+						<div class="right-button-wrapper">
+							<span class="right-button" onclick="window.open('${sessionScope.userMap.myArchiveFullUrlPath}','_blank')">My Archive</span>
+							<c:if test="${sessionScope.signinType eq 'normal'}">
+								<span class="right-button" onclick="goToPage('/login/logout');">Log out</span>
+							</c:if>
+						</div>
 					</div>
 					<c:out value="${pageContent}" escapeXml="false"/>
 				</div>

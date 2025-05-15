@@ -27,6 +27,9 @@ public class CommonService implements CommonMapper{
 	public String selectSelectedMenuTitle(String path) {
 		return commonMapper.selectSelectedMenuTitle(path);
 	}
-	
-	
+
+	@Override
+	public String selectProfileImageUrlPath(GeekilyMap gMap) {
+		return commonMapper.selectProfileImageUrlPath(gMap);
+	}
 }

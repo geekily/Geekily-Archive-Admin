@@ -82,8 +82,11 @@ tbody {
 	border-bottom: 1px solid black;
 }
 
-.top-menu-name-bar div i{
-	font-size: 25px; 
+.top-menu-name-bar .right-button-wrapper{
+	font-size: 13px; 
+}
+
+.top-menu-name-bar .right-button-wrapper .right-button{
 	margin-right: 15px;
 	cursor: pointer;
 }
@@ -197,6 +200,15 @@ tbody {
 }
 
 .project-name:hover {
+	cursor: pointer;
+}
+
+.menu-wrapper .profile-picture{
+	margin-top: 10px;
+	margin-bottom: 15px;
+}
+
+.menu-wrapper .profile-picture:hover{
 	cursor: pointer;
 }
 
