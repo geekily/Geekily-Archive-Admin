@@ -132,7 +132,7 @@
 					<c:when test="${!empty top5ArticleList}">
 						<c:forEach items="${top5ArticleList}" var="top5Article">
 							<div class="article-info d-flex align-items-center" onclick="goToPage('/content/article/view?articleUid=${top5Article.articleUid}')">
-								<img src="${top5Article.thumbnailUrlPath}">
+								<img src="${top5Article.thumbnailUrlPath}" onerror="getErrorImageUrl(this, 'thumbnail')">
 								<div class="article-title p-2 flex-fil">
 									${top5Article.title}
 								</div>

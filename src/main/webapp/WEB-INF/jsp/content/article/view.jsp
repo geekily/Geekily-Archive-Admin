@@ -23,7 +23,7 @@
 		<div class="opt-wrapper row">
 			<div class="opt-label col-1 d-flex align-items-center justify-content-center">thumbnail</div>
 			<div class="opt-content col d-flex align-items-center">
-				<img src="${articleMap.thumbnailUrlPath}" width="200px" border="1">
+				<img src="${articleMap.thumbnailUrlPath}" width="200px" border="1" onerror="getErrorImageUrl(this, 'thumbnail')">
 			</div>
 		</div>
 

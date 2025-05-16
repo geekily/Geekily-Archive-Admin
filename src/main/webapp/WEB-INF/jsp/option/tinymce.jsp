@@ -20,6 +20,13 @@ tinymce.init({
 	, editimage_cors_hosts : ['picsum.photos']
 	, menubar : 'file edit view insert format tools table help'
 	, toolbar : "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl"
+  	, codesample_languages: [
+	    {text: 'HTML/XML', value: 'markup'}
+	    , {text: 'JavaScript', value: 'javascript'}
+	    , {text: 'CSS', value: 'css'}
+	    , {text: 'Java', value: 'java'}
+	    , {text: '.properties', value: 'properties'}
+	  ]
 	, setup : function (editor){
 		tinymceEditor = editor;
 		editor.on('init', function(){

@@ -53,7 +53,8 @@
 			ON
 				F.FILE_UID = A.THUMBNAIL_UID
 		WHERE
-			A.USER_UID = #{userUid}
+			A.USER_UID 			= #{userUid}
+			AND A.FLAG_DELETED 	= 'N'
 		ORDER BY
 			LAV.VIEW_COUNT DESC
 		LIMIT 5

@@ -41,6 +41,9 @@ public class HomeController {
 		case "profile":
 			storageServerUrl += "/image/profile/basic.jpg";
 			break;
+		case "thumbnail":
+			storageServerUrl += "/image/article/no_thumbnail.png";
+			break;
 		default:
 			break;
 		}
