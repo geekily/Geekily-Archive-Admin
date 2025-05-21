@@ -72,6 +72,15 @@ tinymce.init({
 						});
 					}
 				});
+				$object.find('iframe[src*="youtube"]').each(function(){
+					let $el 		= $(this);
+					let widthAttr 	= $el.attr('width');
+					if(isNotEmpty(widthAttr)){
+						$el.css({
+							'max-width': '100%'
+						});
+					}
+				});
 			}else{
 				$object.find('img').each(function(){
 					$(this).css({
