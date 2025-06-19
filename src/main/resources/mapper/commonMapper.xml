@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.CommonMapper">
-	<select id="selectAllMenu" parameterType="GeekilyMap" resultType="HashMap">
+<mapper namespace="com.geekive.geekiveArchiveAdmin.mapper.CommonMapper">
+	<select id="selectAllMenu" parameterType="GeekiveMap" resultType="HashMap">
 		/* commonMapper.selectAllMenu */
 		SELECT 
 			M.MENU_UID       					AS menuUid
@@ -46,7 +46,7 @@
 			PATH LIKE CONCAT('/', #{path}, '%')
 	</select>
 	
-	<select id="selectProfileImageUrlPath" parameterType="GeekilyMap" resultType="String">
+	<select id="selectProfileImageUrlPath" parameterType="GeekiveMap" resultType="String">
 		/* commonMapper.selectProfileImageUrlPath */
 		SELECT
 			F.URL_PATH AS profileImageUrlPath

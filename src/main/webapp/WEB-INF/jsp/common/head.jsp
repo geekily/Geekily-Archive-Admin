@@ -5,10 +5,10 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta property="og:url" content="https://geekily-archive.com">
-    <meta property="og:title" content="Geekily Archive">
+	<meta property="og:url" content="https://archive.geekive.com">
+    <meta property="og:title" content="Geekive Archive">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://geekily-archive.com/storage/image/common/meta_logo.png">
+    <meta property="og:image" content="https://archive.geekive.com/storage/image/common/meta_logo.png">
     <meta property="og:description" content="The simplest blog.">
     
 	<link rel="icon" href="<c:url value="/image/favicon.ico"/>">

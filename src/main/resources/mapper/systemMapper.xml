@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.SystemMapper">
+<mapper namespace="com.geekive.geekiveArchiveAdmin.mapper.SystemMapper">
 		<select id="selectAllMenu" resultType="HashMap">
 		/* systemMapper.selectAllMenu */
 		SELECT 
@@ -19,7 +19,7 @@
 			FLAG_DELETED = 'N'
 	</select>
 
-	<insert id="insertMenu" parameterType="GeekilyMap">
+	<insert id="insertMenu" parameterType="GeekiveMap">
 		/* systemMapper.insertMenu */
 		INSERT INTO MENU (
 			MENU_UID
@@ -55,7 +55,7 @@
 		)
 	</insert>
 	
-	<update id="updateMenu" parameterType="GeekilyMap">
+	<update id="updateMenu" parameterType="GeekiveMap">
 		/* systemMapper.updateMenu */
 		UPDATE MENU
 		SET 
@@ -68,7 +68,7 @@
 		    MENU_UID = #{menuUid}
 	</update>
 	
-	<update id="deleteMenu" parameterType="GeekilyMap">
+	<update id="deleteMenu" parameterType="GeekiveMap">
 		/* systemMapper.deleteMenu */
 		UPDATE MENU
 		SET 

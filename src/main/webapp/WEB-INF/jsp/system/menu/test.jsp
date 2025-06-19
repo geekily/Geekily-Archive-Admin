@@ -9,7 +9,7 @@
 	
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/bootstrap/bootstrap.css"/>"/>
 	
-	<title>GEEKILY LAB</title>
+	<title>GEEKIVE LAB</title>
 </head>
 <body>
 

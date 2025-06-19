@@ -8,7 +8,7 @@
 				<div class="login-wrapper">
 					<div class="row">
 						<div class="login-ga col-12 text-center">
-							Geekily Archive Admin
+							Geekive Archive Admin
 						</div>
 					</div>
 					<div class="mb-3 row">

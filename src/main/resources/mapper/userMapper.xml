@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.UserMapper">
+<mapper namespace="com.geekive.geekiveArchiveAdmin.mapper.UserMapper">
 
-	<select id="selectUser" resultType="GeekilyMap">
+	<select id="selectUser" resultType="GeekiveMap">
 		/* userMapper.selectUser */
 		SELECT
 			U.EMAIL				AS email
@@ -23,7 +23,7 @@
 			U.USER_UID = #{userUid}
 	</select>
 	
-	<select id="checkArchiveNameExistence" parameterType="GeekilyMap" resultType="Boolean">
+	<select id="checkArchiveNameExistence" parameterType="GeekiveMap" resultType="Boolean">
 		/* userMapper.checkArchiveNameExistence */
 	    SELECT EXISTS (
 	    	SELECT 
@@ -36,7 +36,7 @@
 		) AS FLAG_EXISTENCE
 	</select>
 	
-	<select id="checkArchiveNameUpaateAvailable" parameterType="GeekilyMap" resultType="Boolean">
+	<select id="checkArchiveNameUpaateAvailable" parameterType="GeekiveMap" resultType="Boolean">
 		/* userMapper.checkArchiveNameUpaateAvailable */
 		SELECT EXISTS (
 	    	SELECT 
@@ -49,7 +49,7 @@
 		) AS FLAG_EXISTENCE
 	</select>
 	
-	<update id="updateUser" parameterType="GeekilyMap" >
+	<update id="updateUser" parameterType="GeekiveMap" >
 		/* userMapper.updateUser */
 		UPDATE USER
 		SET
@@ -70,7 +70,7 @@
 			USER_UID 		= #{userUid}
 	</update>
 	
-	<update id="deleteUser" parameterType="GeekilyMap" >
+	<update id="deleteUser" parameterType="GeekiveMap" >
 		/* userMapper.deleteUser */
 		UPDATE USER
 		SET
@@ -79,7 +79,7 @@
 			USER_UID = #{userUid}
 	</update>
 
-	<select id="selectSocialMedia" resultType="GeekilyMap">
+	<select id="selectSocialMedia" resultType="GeekiveMap">
 		/* userMapper.selectSocialMedia */
 		SELECT 
 			C.CODE_VALUE	AS codeValue
@@ -98,7 +98,7 @@
 			C.`ORDER` ASC
 	</select>
 
-	<insert id="insertSocialMedia" parameterType="GeekilyMap">
+	<insert id="insertSocialMedia" parameterType="GeekiveMap">
 		/* userMapper.insertSocialMedia */
 		INSERT INTO SOCIAL_MEDIA (
 			SOCIAL_MEDIA_UID

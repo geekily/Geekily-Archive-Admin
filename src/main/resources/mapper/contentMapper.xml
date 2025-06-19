@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geekily.geekilyArchiveAdmin.mapper.ContentMapper">	
+<mapper namespace="com.geekive.geekiveArchiveAdmin.mapper.ContentMapper">	
 	<select id="selectArticleListCount" resultType="Integer">
 		/* contentMapper.selectArticleListCount */
 		SELECT
@@ -71,7 +71,7 @@
 			) RSLT2
 	</select>
 
-	<select id="selectArticleList" resultType="GeekilyMap">
+	<select id="selectArticleList" resultType="GeekiveMap">
 		/* contentMapper.selectArticleList */
 		SELECT
 			RSLT2.*
@@ -143,7 +143,7 @@
 		LIMIT #{dataCountPerPage}
 	</select>
 	
-	<select id="selectArticleForView" parameterType="GeekilyMap" resultType="GeekilyMap">
+	<select id="selectArticleForView" parameterType="GeekiveMap" resultType="GeekiveMap">
 		/* contentMapper.selectArticleForView */
 		SELECT 
 			A.ARTICLE_UID 						AS articleUid
@@ -172,7 +172,7 @@
 			ARTICLE_UID = #{articleUid}
 	</select>
 	
-	<select id="selectArticleForEdit" parameterType="GeekilyMap" resultType="GeekilyMap">
+	<select id="selectArticleForEdit" parameterType="GeekiveMap" resultType="GeekiveMap">
 		/* contentMapper.selectArticleForEdit */
 		SELECT 
 			ARTICLE_UID 		  	AS articleUid
@@ -192,7 +192,7 @@
 			ARTICLE_UID = #{articleUid}
 	</select>
 	
-	<insert id="upsertArticle" parameterType="GeekilyMap">
+	<insert id="upsertArticle" parameterType="GeekiveMap">
 		/* contentMapper.upsertArticle */
 		INSERT INTO ARTICLE (
 			ARTICLE_UID
@@ -227,7 +227,7 @@
 			, FLAG_ACTIVATED	= #{flagActivated}
 	</insert>
 	
-	<update id="deleteArticle" parameterType="GeekilyMap">
+	<update id="deleteArticle" parameterType="GeekiveMap">
 		/* contentMapper.deleteArticle */
 		UPDATE ARTICLE
 		SET
@@ -236,7 +236,7 @@
 			ARTICLE_UID = #{articleUid};
 	</update>
 
-	<select id="selectCategory" parameterType="GeekilyMap" resultType="GeekilyMap">
+	<select id="selectCategory" parameterType="GeekiveMap" resultType="GeekiveMap">
 		/* contentMapper.selectCategory */
 		SELECT 
 		    CATEGORY_UID 			AS categoryUid
@@ -253,7 +253,7 @@
 		    AND USER_UID = #{userUid}
 	</select>
 	
-	<update id="updateCategoryOrder" parameterType="GeekilyMap">
+	<update id="updateCategoryOrder" parameterType="GeekiveMap">
 		/* contentMapper.updateCategoryOrder */
      	UPDATE CATEGORY
     	SET 
@@ -262,7 +262,7 @@
     		CATEGORY_UID = #{categoryUid}
 	</update>
 	
-	<insert id="insertCategory" parameterType="GeekilyMap">
+	<insert id="insertCategory" parameterType="GeekiveMap">
 		/* contentMapper.insertCategory */
 		INSERT INTO CATEGORY (
 		    CATEGORY_UID
@@ -300,7 +300,7 @@
 		)
 	</insert>
 	
-	<update id="updateCategory" parameterType="GeekilyMap">
+	<update id="updateCategory" parameterType="GeekiveMap">
 		/* contentMapper.updateCategory */
 		UPDATE CATEGORY
 		SET   
@@ -313,7 +313,7 @@
 			CATEGORY_UID        = #{categoryUid}
 	</update>
 	
-	<delete id="deleteCategory" parameterType="GeekilyMap">
+	<delete id="deleteCategory" parameterType="GeekiveMap">
 		/* contentMapper.deleteCategory */
 		UPDATE CATEGORY
 		SET 
