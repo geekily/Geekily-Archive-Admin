@@ -246,5 +246,4 @@
 		});
 	</script>
 </c:set>
-
 <%@ include file="/WEB-INF/jsp/common/layout.jsp" %>
