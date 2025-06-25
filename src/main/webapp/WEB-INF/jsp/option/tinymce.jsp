@@ -26,6 +26,7 @@ tinymce.init({
 	    , {text: 'CSS', value: 'css'}
 	    , {text: 'Java', value: 'java'}
 	    , {text: 'Nginx', value: 'nginx'}
+	    , {text: 'Bash', value: 'bash'}
 	    , {text: '.properties', value: 'properties'}
 	  ]
 	, setup : function (editor){
